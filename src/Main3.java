@@ -5,10 +5,18 @@ import java.util.List;
 public class Main3 {
 
     public static void main(String[] args) {
-        List<Integer> list = qsort(List.of(12, 10, 7, 2, 4, 6, 9, 15));
-        System.out.println(list);
+//        List<Integer> list = qsort(List.of(12, 10, 7, 2, 4, 6, 9, 15));
+//        System.out.println(list);
+
+        int[] array = {12, 10, 7, 2, 4, 6, 9, 15};
+        qsort(array, 0, array.length - 1);
+        System.out.println(Arrays.toString(array));
+
     }
 
+    private static void qsort(int[] array) {
+        qsort(array, 0, array.length - 1);
+    }
 
     private static void qsort(int[] array, int low, int high) {
         if (array.length < 2 || low >= high) {
@@ -34,7 +42,12 @@ public class Main3 {
             }
         }
         // Рекурсия для сортировки левой и правой части
-
+        if (low < j) {
+            qsort(array, low, j);
+        }
+        if (i < high) {
+            qsort(array, i, high);
+        }
     }
 
     // TODO Разобраться и исправить ошибку
