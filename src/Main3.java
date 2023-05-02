@@ -1,79 +1,51 @@
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.stream.Stream;
 
 public class Main3 {
 
     public static void main(String[] args) {
-//        List<Integer> list = qsort(List.of(12, 10, 7, 2, 4, 6, 9, 15));
-//        System.out.println(list);
-
-        int[] array = {12, 10, 7, 2, 4, 6, 9, 15};
-        qsort(array, 0, array.length - 1);
-        System.out.println(Arrays.toString(array));
-
-    }
-
-    private static void qsort(int[] array) {
-        qsort(array, 0, array.length - 1);
-    }
-
-    private static void qsort(int[] array, int low, int high) {
-        if (array.length < 2 || low >= high) {
-            return;
-        }
-        // Опорный элемент
-        int pivot = array[low + (high - low) / 2];
-        int i = low, j = high;
-        while (i <= j) {
-            while (array[i] < pivot) {
-                i++;
-            }
-            while (array[j] > pivot) {
-                j--;
-            }
-            if (i <= j) {
-                // меняем местами i-ый элемент и j-ый
-                int temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
-                i++;
-                j--;
-            }
-        }
-        // Рекурсия для сортировки левой и правой части
-        if (low < j) {
-            qsort(array, low, j);
-        }
-        if (i < high) {
-            qsort(array, i, high);
-        }
-    }
-
-    // TODO Разобраться и исправить ошибку
-    private static List<Integer> qsort(List<Integer> array) {
-        // Базовый случай
-        if (array.size() < 2) {
-            return array;
-        }
-        // Опорный элемент
-        int pivot = array.get(0);
-        // Массив элементов, меньших pivot
-        ArrayList<Integer> less = new ArrayList<>();
-        // Массив элементов, больших pivot
-        ArrayList<Integer> greater = new ArrayList<>();
-        for (int i = 0; i < array.size(); i++) {
-            if (array.get(i) < pivot) {
-                less.add(array.get(i));
-            } else {
-                greater.add(array.get(i));
+        int n = 3;
+        int m = 4;
+        Item[] items = {new Item("гитара", 1, 1500),
+                new Item("бензопила", 4, 3000),
+                new Item("ноутбук", 3, 2000)};
+        Backpack[][] bp = new Backpack[n + 1][m + 1];
+        for (int i = 0; i < n + 1; i++) {
+            for (int j = 0; j < m + 1; j++) {
+                if (i == 0 || j == 0) {
+                    // Нулевая строка или нулевой столбец - заполняем их нулями
+                    bp[i][j] = new Backpack(new Item[]{}, 0);
+                } else if (i == 1) {
+                    // Первая строка заполняется просто: первый предмет кладем или нет в
+                    // зависимости от веса
+                    bp[i][j] = items[0].getWeight() <= j ? new Backpack(new Item[]{items[0]}, items[0].getPrice())
+                            : new Backpack(new Item[]{}, 0);
+                } else {
+                    if (items[i - 1].getWeight() > j) {
+                        // Очередной предмет не влезает в рюкзак
+                        bp[i][j] = bp[i - 1][j];    // записываем предыдущий максимум
+                    } else {
+                        // Рассчитаем цену очередного предмета + максимальную цену
+                        int price = items[i - 1].getPrice() + bp[i - 1][j - items[i - 1].getWeight()].getPrice();
+                        if (bp[i - 1][j].getPrice() > price) {
+                            // Если предыдущий максимум больше нового
+                            bp[i][j] = bp[i - 1][j]; // запишем его
+                        } else {
+                            // Фиксируем новый максимум
+                            bp[i][j] = new Backpack(Stream.concat(Arrays.stream(new Item[]{items[i - 1]}),
+                                    Arrays.stream(bp[i - 1][j - items[i - 1].getWeight()].getItems())).toArray(Item[]::new), price);
+                        }
+                    }
+                }
             }
         }
-        ArrayList<Integer> result = new ArrayList<>();
-        result.addAll(qsort(less));
-//        result.add(pivot);
-        result.addAll(qsort(greater));
-        return result;
+        // Вывод результатов
+        for (int i = 1; i < n + 1; i++) {
+            for (int j = 1; j < m + 1; j++) {
+                System.out.print(bp[i][j].getDescription() + " ");
+            }
+            System.out.println();
+        }
     }
 
 }
