@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tel-Ran</title>
+</head>
+<body>
+<script>
+    // Задача о рюкзаке
+    class Cell {
+        constructor(names, value) {
+            this.names = names;
+            this.value = value;
+        }
+    }
+
+    let names = ["гитара", "бензопила", "ноутбук"];
+    let weights = [1, 4, 3];
+    let values = [1500, 3000, 2000];
+    let maxCapacity = 4;
+    let array = [];
+    for (let i = 0; i < weights.length + 1; i++) {
+        array[i] = [];
+    }
+    for (let i = 0; i < weights.length + 1; i++) {
+        for (let j = 0; j <= maxCapacity; j++) {
+            if (i === 0 || j === 0) {
+                // Нулевая строка или нулевой столбец - заполняем их нулями
+                array[i][j] = new Cell([], 0);
+            } else if (i === 1) {
+                // Первая строка заполняется просто: первый предмет кладем или нет в
+                // зависимости от веса
+                array[i][j] = weights[0] <= j ? new Cell([names[0]], values[0]) : new Cell([], 0);
+            } else {
+                if (weights[i - 1] > j) {
+                    // Вес текущей вещи больше размера рюкзака - очередная вещь не влезает в рюкзак
+                    let prevNames = array[i - 1][j].names.slice(0);
+                    array[i][j] = new Cell(prevNames, array[i - 1][j].value);
+                } else {
+                    let prev = array[i - 1][j].value;
+                    let curr = values[i - 1] + array[i - 1][j - weights[i - 1]].value;
+                    if (prev > curr) {
+                        let prevNames = array[i - 1][j].names.slice(0);
+                        array[i][j] = new Cell(prevNames, prev);
+                    } else {
+                        let prevNames = array[i - 1][j - weights[i - 1]].names.slice(0);
+                        prevNames.push(names[i - 1])
+                        array[i][j] = new Cell(prevNames, curr);
+                    }
+                }
+            }
+        }
+    }
+    console.log(array[names.length][maxCapacity]);
+</script>
+</body>
+</html>
