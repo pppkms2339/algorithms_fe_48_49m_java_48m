@@ -1,46 +1,72 @@
+// TODO Можно доработать методы push и remove чтобы можно было
+// добавлять любое количество элементов
 public class Queue {
 
-    private QueueItem head = null, tail = null;
+    private int[] arr;      // массив для хранения элементов queue
+    private int head;       // head указывает на первый элемент в queue
+    private int tail;       // tail часть указывает на последний элемент в queue
+    private int capacity;   // максимальная емкость queue
+    private int count;      // текущий размер queue
 
-    public void add(int value) {
-        QueueItem temp = new QueueItem();
-        temp.value = value;
-        if (tail != null) {
-            // Если очередь не пустая
-            tail.next = temp;
-        } else {
-            // Если очередь пустая
-            head = temp;
-        }
-        tail = temp;
+    // Конструктор для инициализации queue
+    public Queue(int size) {
+        arr = new int[size];
+        capacity = size;
+        head = -1;
+        tail = -1;
+        count = 0;
     }
 
+    // Вставляет элемент в конец queue
+    public void push(int data) {
+        if (count == capacity) {
+            System.out.println("Queue is full!");
+            return;
+        }
+        if (tail == capacity - 1) {
+            // После "хвоста" в очереди нет свободных ячеек
+            System.out.println("Not enough space after tail!");
+            return;
+        }
+        tail++;
+        if (head == -1) {
+            head++;
+        }
+        arr[tail] = data;
+        count++;
+    }
+
+    // Удаляет элемент из начала queue
     public int remove() {
-        if (isEmpty()) {
-            System.out.println("Queue is empty");
+        if (head == -1) {
+            System.out.println("Queue is empty!");
             return -1;
         }
-        int value = head.value;
-        if (head == tail) {
-            // У нас один элемент в очереди
-            head = null;
-            tail = null;
-        } else {
-            // В очереди больше одного элемента
-            head = head.next;
+        int data = arr[head];
+        head++;
+        if (head > tail) {
+            // Значит, что очередь стала пустой
+            head = tail = -1;
         }
-        return value;
+        count--;
+        return data;
+    }
+
+    // Возвращает элемент из начала не удаляя его
+    public int peek() {
+        if (head == -1) {
+            System.out.println("Queue is empty!");
+            return -1;
+        }
+        return arr[head];
     }
 
     public boolean isEmpty() {
-        return head == null || tail == null;
+        return count == 0;
     }
 
-    class QueueItem {
-        int value;
-        QueueItem next;
+    public int size() {
+        return count;
     }
 
 }
-
-
