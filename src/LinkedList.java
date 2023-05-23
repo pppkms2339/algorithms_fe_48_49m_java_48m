@@ -32,6 +32,7 @@ public class LinkedList {
         if (index <= 0) {
             // То вставляем temp со стороны "головы" списка
             pushToHead(data);
+            return;
         }
         int count = 0;
         Node t = head;
@@ -47,17 +48,96 @@ public class LinkedList {
         t.next = temp;
     }
 
+    public void print() {
+        Node t = head;
+        while (t != null) {
+            System.out.print(t.value + " ");
+            t = t.next;
+        }
+        System.out.println();
+    }
 
-//    pushToHead(int data),
-//    pushToTail(int data),
-//    pushToIndex(int index, int data)
+    public int size() {
+        int count = 0;
+        Node t = head;
+        while (t != null) {
+            count++;
+            t = t.next;
+        }
+        return count;
+    }
 
-//    removeFirst(),
-//    removeLast(),
-//    remove(int index)
-//    get(int index)
-//    size()
-//    print()
+    public int get(int index) {
+        if (head == null) {
+            System.out.println("List is empty");
+            return -1;
+        }
+        if (index < 0) {
+            return head.value;
+        }
+        int count = 0;
+        Node t = head;
+        while (t.next != null) {
+            if (count == index) {
+                break;
+            }
+            count++;
+            t = t.next;
+        }
+        return t.value;
+    }
+
+    public void removeFirst() {
+        if (head == null) {
+            System.out.println("List is empty");
+            return;
+        }
+        head = head.next;
+    }
+
+    public void removeLast() {
+        if (head == null) {
+            System.out.println("List is empty");
+            return;
+        }
+        if (head.next == null) {
+            // Удаление из списка, в котором один элемент
+            head = null;
+            return;
+        }
+        Node t = head.next, p = head;
+        while (t.next != null) {
+            p = p.next;
+            t = t.next;
+        }
+        p.next = null;
+    }
+
+    public void remove(int index) {
+        if (head == null) {
+            System.out.println("List is empty");
+            return;
+        }
+        if (index <= 0) {
+            removeFirst();
+            return;
+        }
+        if (head.next == null) {
+            head = null;
+            return;
+        }
+        int count = 1;
+        Node t = head.next, p = head;
+        while (t.next != null) {
+            if (count == index) {
+                break;
+            }
+            count++;
+            p = p.next;
+            t = t.next;
+        }
+        p.next = t.next;
+    }
 
     class Node {
         int value;
