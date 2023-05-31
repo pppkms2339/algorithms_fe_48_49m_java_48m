@@ -14,12 +14,33 @@ public class Main2 {
         stations.put(5, new HashSet<>(List.of("CA", "AZ")));
         // Ответ - итоговый набор станций
         Set<Integer> finalStations = new HashSet<>();
+        while (!statesNeeded.isEmpty()) {
+            Set<String> statesCovered = new HashSet<>();    // Текущее покрытие штатов
+            int bestStation = 0;    // Станция, которая покрывает больше всего штатов, не входящих в statesCovered
+            for (Map.Entry<Integer, Set<String>> entry : stations.entrySet()) {
+                // Перебираем все станции
+                Set<String> covered = intersect(statesNeeded, entry.getValue());;
+                if (covered.size() > statesCovered.size()) {
+                    bestStation = entry.getKey();
+                    statesCovered = covered;
+                }
+            }
+            statesNeeded.removeAll(statesCovered);
+            finalStations.add(bestStation);
+        }
+        System.out.println(finalStations);
+    }
 
-        Set<String> statesCovered = new HashSet<>();    // Текущее покрытие штатов
-        int bestStation;    // Станция, которая покрывает больше всего штатов, не входящих в statesCovered
-
-
-
+    private static Set<String> intersect(Set<String> set1, Set<String> set2) {
+//        Set<String> set = new HashSet<>(set1);
+//        set.retainAll(set2);
+        Set<String> set = new HashSet<>();
+        set1.forEach(e -> {
+            if(set2.contains(e)) {
+                set.add(e);
+            }
+        });
+        return set;
     }
 
 }

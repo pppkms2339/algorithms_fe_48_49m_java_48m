@@ -139,6 +139,10 @@ public class LinkedList {
         p.next = t.next;
     }
 
+    public Node getHead() {
+        return head;
+    }
+
     class Node {
         int value;
         Node next;
