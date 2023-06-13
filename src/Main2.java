@@ -11,6 +11,14 @@ public class Main2 {
         tree.print();
         System.out.println();
         tree.pass();
+        System.out.println();
+        tree.passIterative();
+        System.out.println();
+        System.out.println(tree.height());
+        System.out.println(tree.contains(5));
+        System.out.println(tree.contains(30));
+        tree.delete(2);
+        tree.print();
     }
 
 }

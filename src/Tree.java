@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 // BST
 public class Tree {
@@ -45,7 +46,7 @@ public class Tree {
         pass(root);
     }
 
-    // Обход в глубину
+    // Обход в глубину (рекурсивная реализация)
     private void pass(Node t) {
         if (t.leftChild != null) {
             pass(t.leftChild);
@@ -54,6 +55,41 @@ public class Tree {
         if (t.rightChild != null) {
             pass(t.rightChild);
         }
+    }
+
+    public void passIterative() {
+        passIterative(root);
+    }
+
+    // Обход в глубину (итерационная реализация)
+    private void passIterative(Node top) {
+        Stack<Node> stack = new Stack<>();
+        while (top != null || !stack.isEmpty()) {
+            if (!stack.isEmpty()) {
+                top = stack.pop();
+                System.out.println(top.value);
+                if (top.rightChild != null) {
+                    top = top.rightChild;
+                } else {
+                    top = null;
+                }
+            }
+            while (top != null) {
+                stack.push(top);
+                top = top.leftChild;
+            }
+        }
+    }
+
+    public int height() {
+        return height(root);
+    }
+
+    private int height(Node t) {
+        if (t == null) {
+            return 0;
+        }
+        return Math.max(height(t.leftChild), height(t.rightChild)) + 1;
     }
 
     // Обход в ширину
@@ -69,6 +105,85 @@ public class Tree {
                 queue.add(temp.rightChild);
             }
             System.out.println(temp.value);
+        }
+    }
+
+    public boolean contains(int value) {
+        return search(root, value) != null;
+    }
+
+    private Node search(Node t, int value) {
+        if (t == null || t.value == value) {
+            return t;
+        }
+        if (value < t.value) {
+            return search(t.leftChild, value);
+        } else {
+            return search(t.rightChild, value);
+        }
+    }
+
+    private Node searchParent(Node t, Node s) {
+        if (s == root) {
+            return null;
+        }
+        if (t.leftChild == s || t.rightChild == s) {
+            return t;
+        }
+        if (s.value < t.value) {
+            return searchParent(t.leftChild, s);
+        } else {
+            return searchParent(t.rightChild, s);
+        }
+    }
+
+    // Находим минимальный элемент в поддереве элемента t
+    private Node subtreeMin(Node t) {
+        while (t.leftChild != null) {
+            t = t.leftChild;
+        }
+        return t;
+    }
+
+    public void delete(int value) {
+        Node t = search(root, value);
+        if (t != null) {
+            delete(t);
+        }
+    }
+
+    private void delete (Node t) {
+        // Нам нужен parent элемента t. Найдем его
+        Node parent = searchParent(root, t);
+        if (t.leftChild == null && t.rightChild == null) {
+            // Удаляется лист дерева
+            if (parent.leftChild == t) {
+                // У родителя удаляется левый потомок
+                parent.leftChild = null;
+            } else {
+                // У родителя удаляется правый потомок
+                parent.rightChild = null;
+            }
+        } else if (t.leftChild == null || t.rightChild == null) {
+            // Удаляется элемент с одним потомком
+            if (t.leftChild == null) {
+                if (parent.leftChild == t) {
+                    parent.leftChild = t.rightChild;
+                } else {
+                    parent.rightChild = t.rightChild;
+                }
+            } else {
+                if (parent.leftChild == t) {
+                    parent.leftChild = t.leftChild;
+                } else {
+                    parent.rightChild = t.leftChild;
+                }
+            }
+        } else {
+            // Удаляется элемент с двумя потомками
+            // 1) Находим минимальный элемент в правом поддереве
+            Node min = subtreeMin(t.rightChild);
+
         }
     }
 
