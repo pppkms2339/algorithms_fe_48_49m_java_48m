@@ -57,11 +57,27 @@ public class Tree {
         }
     }
 
-    public void passIterative() {
-        passIterative(root);
-    }
+    // инфиксный
+    // префиксныйв  i++, ++i
+    // постфиксный
 
     // Обход в глубину (итерационная реализация)
+    public void passIterative() {
+        Stack<Node> stack = new Stack<>();
+        Node current = root;
+        while (!stack.isEmpty() || current != null) {
+            if (current != null) {
+                stack.push(current);
+                current = current.leftChild;
+            } else {
+                current = stack.pop();
+                System.out.println(current.value);
+                current = current.rightChild;
+            }
+        }
+    }
+
+
     private void passIterative(Node top) {
         Stack<Node> stack = new Stack<>();
         while (top != null || !stack.isEmpty()) {
@@ -183,7 +199,13 @@ public class Tree {
             // Удаляется элемент с двумя потомками
             // 1) Находим минимальный элемент в правом поддереве
             Node min = subtreeMin(t.rightChild);
-
+            // 2) Сохранить значение найденного min-узла
+            int value = min.value;
+            // 3) Рекурсивно удаляем найденный min-узел (подчеркнем, что у этого элемента
+            // может быть только один правый потомок)
+            delete(min);
+            // 4) Копируем значение ищ min-узла в удаляемый
+            t.value = value;
         }
     }
 
