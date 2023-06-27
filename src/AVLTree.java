@@ -3,7 +3,7 @@ public class AVLTree {
     private Node root;
 
     private int getHeight(Node n) {
-        return n == null ? -1 : n.height;
+        return n == null ? 0 : n.height;
     }
 
     private void updateHeight(Node n) {
